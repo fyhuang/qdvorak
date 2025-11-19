@@ -6,5 +6,5 @@ build:
 setup:
     cd zsa_firmware && qmk setup zsa/qmk_firmware -b firmware25
 
-flash:
+flash: build
     cd zsa_firmware && qmk flash -kb moonlander -km qdvorak
