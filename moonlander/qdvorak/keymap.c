@@ -105,19 +105,37 @@ void caps_word_set_user(bool active) {
   }
 }
 
-// Runs whenever there is a layer state change.
-layer_state_t layer_state_set_user(layer_state_t layer_state) {
-  if (layer_state & (1<<QWRT)) {
+// Configure RGB effects
+void keyboard_post_init_user() {
+  rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+  rgb_matrix_sethsv_noeeprom(0, 0, 0);  // HSV: 0 value = off
+}
+
+bool rgb_matrix_indicators_user() {
+  if (IS_LAYER_ON(QWRT)) {
+    // Top mid button on left side
+    rgb_matrix_set_color(30, RGB_BLUE);
+  }
+  if (IS_LAYER_ON(SYMB)) {
+    rgb_matrix_set_color(66, RGB_GREEN);
+  }
+  return true;
+}
+
+// Note: moonlander.c doesn't call layer_state_set_user when
+// MOONLANDER_USER_LEDS is set (this is probably a bug)
+// Thus we do this logic in housekeeping_task_user instead
+//layer_state_t layer_state_set_user(layer_state_t layer_state) {
+void housekeeping_task_user(void) {
+  if (IS_LAYER_ON(QWRT)) {
     STATUS_LED_4(true);
   } else {
     STATUS_LED_4(false);
   }
 
-  if (layer_state & (1<<SYMB)) {
+  if (IS_LAYER_ON(SYMB)) {
     STATUS_LED_5(true);
   } else {
     STATUS_LED_5(false);
   }
-
-  return layer_state;
 };
